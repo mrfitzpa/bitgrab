@@ -42,8 +42,8 @@ __status__     = "Development"
 ## Main body of script ##
 #########################
 
-dirname = os.path.abspath(os.path.dirname(__file__)) + '/dir_to_copy'
+dirname = os.path.dirname(os.path.realpath(__file__)) + '/dir_to_copy'
 dir_obj = bitgrab.Dir(dirname)  # Store contents of directory in an object.
 
-new_dirname = os.path.abspath(os.path.dirname(__file__)) + '/dir_copy'
+new_dirname = os.path.dirname(os.path.realpath(__file__)) + '/dir_copy'
 dir_obj.copy_to(new_dirname)  # Copy directory contents into a new directory.
