@@ -17,6 +17,9 @@ import os
 # For making directories (i.e. emulating mkdir).
 import pathlib
 
+# For pattern matching.
+import re
+
 
 
 # To get version of bitgrab.
@@ -118,6 +121,10 @@ class Dir():
     ----------
     dirname : `str`
         The relative or absolute path to the directory.
+    ignore : `array_like` (`str`, ndim=1), optional
+        A list of strings, each one representing a pattern. A file contained
+        within the directory that matches any one of these patterns will be
+        ignored and not copied.
 
     Attributes
     ----------
@@ -125,13 +132,13 @@ class Dir():
         Basename of directory.
     dirname : `str`
         Absolute path to the directory.
-    files : array_like(:class:`bitgrab.File`, ndim=1)
+    files : `array_like` (:class:`bitgrab.File`, ndim=1)
         Contains the data of every file within the directory and subdirectories
         therein.
-    subdirnames : array_like(`str`, ndim=1)
+    subdirnames : `array_like` (`str`, ndim=1)
         The list of absolute paths to all subdirectories.
     """
-    def __init__(self, dirname):
+    def __init__(self, dirname, ignore=[]):
         dir_tree = list(os.walk(dirname))  # See doc of os.walk for details.
         if dir_tree == []:
             raise NotADirectoryError("Directory does not exist.")
@@ -149,6 +156,13 @@ class Dir():
             file_basenames = x[2]
             for file_basename in file_basenames:
                 filename = subdirname + '/' + file_basename
+                pattern_match = False
+                for pattern in ignore:
+                    if re.search(pattern, filename):
+                        pattern_match = True
+                        break
+                if pattern_match:
+                    continue
                 file_obj = File(filename)
                 self.files += [file_obj]
 
